@@ -29,7 +29,9 @@ def files_from_path(pathname):
     '''
     FileNameList = []
     for file in os.listdir(pathname):
-        FileNameList.append(os.path.join(pathname, file))
+        ext=os.path.splitext(file)[1]
+        if ext == ".root":
+            FileNameList.append(os.path.join(pathname, file))
     return FileNameList
 
 def hadd_anatuple(output_tmp_folder, output_root_file):
