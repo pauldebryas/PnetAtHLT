@@ -107,7 +107,7 @@ class ProduceRateFiles(Task, HTCondorWorkflow, law.LocalWorkflow):
         event_counter[intput_root_file] = {}
         print(f"For {os.path.basename(intput_root_file)}:")
 
-        HLT_config = ['HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1', 'HLT_LooseDeepTauPFTauHPS180_L2NN_eta2p1_v3', 'HLT_DoubleTauOrSingleTau']
+        HLT_config = ['HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1', 'HLT_LooseDeepTauPFTauHPS180_L2NN_eta2p1_v3', 'HLT_DoubleTauOrSingleTau','HLT_Ele24_eta2p1_WPTight_Gsf_PNetTauhPFJetPt30_Loose_eta2p3_CrossL1','HLT_IsoMu20_eta2p1_LooseDeepTauPFTauHPS27_eta2p1_CrossL1']
         if self.HLT_name not in HLT_config:
             print(f'HLT name {self.HLT_name} not implemented in the code')
             raise
@@ -139,6 +139,24 @@ class ProduceRateFiles(Task, HTCondorWorkflow, law.LocalWorkflow):
             else:
                 N_den_i, N_num_i = eph_dataset.get_Nnum_Nden_HLT_DoubleORSingleDeepTau()
                 
+        if self.HLT_name == 'HLT_Ele24_eta2p1_WPTight_Gsf_PNetTauhPFJetPt30_Loose_eta2p3_CrossL1':
+            from HLTClass.ETauDataset import ETauDataset
+            
+            eph_dataset = ETauDataset(intput_root_file)
+            if self.PNetMode:
+                N_den_i, N_num_i = eph_dataset.get_Nnum_Nden_ETauPNet(self.PNetparam)
+            else:
+                N_den_i, N_num_i = eph_dataset.get_Nnum_Nden_HLT_ETauDeepNet()
+                
+        if self.HLT_name == 'HLT_IsoMu20_eta2p1_LooseDeepTauPFTauHPS27_eta2p1_CrossL1':
+            from HLTClass.MuTauDataset import MuTauDataset
+            
+            eph_dataset = MuTauDataset(intput_root_file)
+            if self.PNetMode:
+                N_den_i, N_num_i = eph_dataset.get_Nnum_Nden_MuTauPNet(self.PNetparam)
+            else:
+                N_den_i, N_num_i = eph_dataset.get_Nnum_Nden_HLT_MuTauDeepNet()
+
         event_counter[intput_root_file]['N_den'] = N_den_i
         event_counter[intput_root_file]['N_num'] = N_num_i
 

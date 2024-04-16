@@ -5,10 +5,23 @@ import numpy as np
 import awkward as ak
 from helpers import delta_r
 
+### Get L1Taus
 def get_L1Taus(events):
     L1taus_dict = {"pt": events["L1Tau_pt"].compute(), "eta": events["L1Tau_eta"].compute(), "phi": events["L1Tau_phi"].compute(), "Iso": events["L1Tau_hwIso"].compute()}
     L1Taus = ak.zip(L1taus_dict)
     return L1Taus
+
+### Get L1Egamma
+def get_L1Egamma(events):
+    L1electrons_dict = {"pt": events["L1Egamma_pt"].compute(), "eta": events["L1Egamma_eta"].compute(), "phi": events["L1Egamma_phi"].compute(), "Iso": events["L1Egamma_hwIso"].compute()}
+    L1Electrons = ak.zip(L1electrons_dict)
+    return L1Electrons
+
+### Get L1Muons
+def get_L1Muons(events):
+    L1muons_dict = {"pt": events["L1Muon_pt"].compute(), "eta": events["L1Muon_eta"].compute(), "phi": events["L1Muon_phi"].compute()}
+    L1Muons = ak.zip(L1muons_dict)
+    return L1Muons
 
 def get_Taus(events):
     taus_dict = {"pt": events["Tau_pt"].compute(), "eta": events["Tau_eta"].compute(), "phi": events["Tau_phi"].compute(), "deepTauVSjet": events["Tau_deepTauVSjet"].compute()}
@@ -20,6 +33,17 @@ def get_Jets(events):
     Jets = ak.zip(jets_dict)
     return Jets
 
+def get_Muons(events):
+    muons_dict = {"pt": events["Muon_pt"].compute(), "eta": events["Muon_eta"].compute(), "phi": events["Muon_phi"].compute(), "muon_passSingleMuon": events['Muon_passSingleMuon'].compute(), "muon_passMuTau": events['Muon_passMuTau'].compute()}
+    Muons = ak.zip(muons_dict)
+    return Muons
+
+def get_Electrons(events):
+    electrons_dict = {"pt": events["Electron_pt"].compute(), "eta": events["Electron_eta"].compute(), "phi": events["Electron_phi"].compute(), "electron_passSingleElectron": events['Electron_passSingleElectron'].compute(), "electron_passETau": events['Electron_passETau'].compute()}
+    Electrons = ak.zip(electrons_dict)
+    return Electrons
+
+
 def get_GenTaus(events):
     gentaus_dict = {"pt": events["GenLepton_pt"].compute(), "eta": events["GenLepton_eta"].compute(), "phi": events["GenLepton_phi"].compute(), "nChargedHad": events["GenLepton_nChargedHad"].compute(), "nNeutralHad": events["GenLepton_nNeutralHad"].compute(), "DecayMode": events["GenLepton_DecayMode"].compute(), "charge": events["GenLepton_charge"].compute()}
     GenTaus = ak.zip(gentaus_dict)
@@ -30,12 +54,50 @@ def hGenTau_selection(events):
     hGenTau_mask = (events['GenLepton_pt'].compute() >= 20) & (np.abs(events['GenLepton_eta'].compute()) <= 2.3) & (events['GenLepton_kind'].compute() == 5)
     return hGenTau_mask
 
+def get_GenMuons(events):
+    genmuons_dict = {"pt": events["GenLepton_pt"].compute(), "eta": events["GenLepton_eta"].compute(), "phi": events["GenLepton_phi"].compute(), "nChargedHad": events["GenLepton_nChargedHad"].compute(), "nNeutralHad": events["GenLepton_nNeutralHad"].compute(), "DecayMode": events["GenLepton_DecayMode"].compute(), "charge": events["GenLepton_charge"].compute()}
+    GenMuons = ak.zip(genmuons_dict)
+    return GenMuons
+
+def get_GenElectrons(events):
+    genelectrons_dict = {"pt": events["GenLepton_pt"].compute(), "eta": events["GenLepton_eta"].compute(), "phi": events["GenLepton_phi"].compute(), "nChargedHad": events["GenLepton_nChargedHad"].compute(), "nNeutralHad": events["GenLepton_nNeutralHad"].compute(), "DecayMode": events["GenLepton_DecayMode"].compute(), "charge": events["GenLepton_charge"].compute()}
+    GenElectrons = ak.zip(genelectrons_dict)
+    return GenElectrons
+
+
+def GenElectron_selection(events):
+    # return mask for GenLepton for Tau decay into electron passing minimal selection
+    GenElectron_mask = (events['GenLepton_pt'].compute() >= 22 ) & (np.abs(events['GenLepton_eta'].compute()) <= 2.1) & (events['GenLepton_kind'].compute() == 3)
+    return GenElectron_mask
+
+def GenMuon_selection(events):
+    # return mask for GenLepton for Tau decay into muon passing minimal selection
+    GenMuon_mask = (events['GenLepton_pt'].compute() >= 18) & (np.abs(events['GenLepton_eta'].compute()) <= 2.1) & (events['GenLepton_kind'].compute() == 4)
+    return GenMuon_mask
+
+
 def matching_L1Taus_obj(L1Taus, Obj, dR_matching_min = 0.5):
     obj_inpair, l1taus_inpair = ak.unzip(ak.cartesian([Obj, L1Taus], nested=True))
     dR_obj_l1taus = delta_r(obj_inpair, l1taus_inpair)
     mask_obj_l1taus = (dR_obj_l1taus < dR_matching_min)
     
     mask = ak.any(mask_obj_l1taus, axis=-1)
+    return mask
+
+def matching_L1Muons_obj(L1Muons, Obj, dR_matching_min = 0.5):
+    obj_inpair, l1muons_inpair = ak.unzip(ak.cartesian([Obj, L1Muons], nested=True))
+    dR_obj_l1muons = delta_r(obj_inpair, l1muons_inpair)
+    mask_obj_l1muons = (dR_obj_l1muons < dR_matching_min)
+    
+    mask = ak.any(mask_obj_l1muons, axis=-1)
+    return mask
+
+def matching_L1Egamma_obj(L1Egamma, Obj, dR_matching_min = 0.5):
+    obj_inpair, l1egamma_inpair = ak.unzip(ak.cartesian([Obj, L1Egamma], nested=True))
+    dR_obj_l1egamma = delta_r(obj_inpair, l1egamma_inpair)
+    mask_obj_l1egamma = (dR_obj_l1egamma < dR_matching_min)
+    
+    mask = ak.any(mask_obj_l1egamma, axis=-1)
     return mask
 
 def matching_Gentaus(L1Taus, Taus, GenTaus, dR_matching_min = 0.5):
@@ -50,6 +112,31 @@ def matching_Gentaus(L1Taus, Taus, GenTaus, dR_matching_min = 0.5):
     matching_mask = ak.any(mask_gentaus_l1taus, axis=-1) & ak.any(mask_gentaus_taus, axis=-1)  # Gentau should match l1Taus and Taus
     return matching_mask
 
+def matching_GenMuons(L1Muons, Muons, GenMuons, dR_matching_min = 0.5):
+    genmuons_inpair, l1muons_inpair = ak.unzip(ak.cartesian([GenMuons, L1Muons], nested=True))
+    dR_genmuons_l1muons = delta_r(genmuons_inpair, l1muons_inpair)
+    mask_genmuons_l1muons = (dR_genmuons_l1muons < dR_matching_min) 
+
+    genmuons_inpair, muons_inpair = ak.unzip(ak.cartesian([GenMuons, Muons], nested=True))
+    dR_genmuons_muons = delta_r(genmuons_inpair, muons_inpair)
+    mask_genmuons_muons = (dR_genmuons_muons < dR_matching_min)
+
+    matching_mask = ak.any(mask_genmuons_l1muons, axis=-1) & ak.any(mask_genmuons_muons, axis=-1)  # Genmuon should match l1muons and Muons
+    return matching_mask
+
+def matching_GenElectrons(L1Egamma, Electrons, GenElectrons, dR_matching_min = 0.5):
+    genelectrons_inpair, l1egamma_inpair = ak.unzip(ak.cartesian([GenElectrons, L1Egamma], nested=True))
+    dR_genelectrons_l1egamma = delta_r(genelectrons_inpair, l1egamma_inpair)
+    mask_genelectrons_l1egamma = (dR_genelectrons_l1egamma < dR_matching_min) 
+
+    genelectrons_inpair, electrons_inpair = ak.unzip(ak.cartesian([GenElectrons, Electrons], nested=True))
+    dR_genelectrons_electrons = delta_r(genelectrons_inpair, electrons_inpair)
+    mask_genelectrons_electrons = (dR_genelectrons_electrons < dR_matching_min)
+
+    matching_mask = ak.any(mask_genelectrons_l1egamma, axis=-1) & ak.any(mask_genelectrons_electrons, axis=-1)  # Genelectrons should match l1egamma and Electrons
+    return matching_mask
+
+
 def compute_PNet_charge_prob(probTauP, probTauM):
     return np.abs(np.ones(len(probTauP))*0.5 - probTauP/(probTauP + probTauM))
     
@@ -58,6 +145,8 @@ def iterable(arg):
         isinstance(arg, collections.abc.Iterable)
         and not isinstance(arg, six.string_types)
     )
+
+
 
 
 
@@ -186,7 +275,24 @@ class Dataset:
                              'Jet_PNet_ptcorr',
                              'Jet_pt',
                              'Jet_eta',
-                             'Jet_phi']
+                             'Jet_phi',
+                             'L1Egamma_pt',
+                             'L1Egamma_eta',
+                             'L1Egamma_phi',
+                             'L1Egamma_hwIso',
+                             'Electron_pt',
+                             'Electron_eta',
+                             'Electron_phi',
+                             'Electron_passSingleElectron',
+                             'Electron_passETau',
+                             'L1Muon_pt',
+                             'L1Muon_eta',
+                             'L1Muon_phi',
+                             'Muon_pt',
+                             'Muon_phi',
+                             'Muon_eta',
+                             'Muon_passSingleMuon',
+                             'Muon_passMuTau']
         
         saved_info_GenLepton = ['pt', 
                                 'eta', 
