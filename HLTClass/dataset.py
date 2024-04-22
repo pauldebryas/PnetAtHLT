@@ -220,7 +220,10 @@ class Dataset:
                              'nPFPrimaryVertex',
                              'nPFSecondaryVertex',
                              'L1_DoubleIsoTau34er2p1',
+                             'L1_Mu18er2p1_Tau24er2p1',
+                             'L1_Mu18er2p1_Tau26er2p1',
                              'HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1',
+                             'HLT_IsoMu20_eta2p1_PNetTauhPFJet27_Loose_eta2p3_CrossL1',
                              'Tau_pt',
                              'Tau_eta',
                              'Tau_phi',
@@ -237,7 +240,24 @@ class Dataset:
                              'Jet_PNet_ptcorr',
                              'Jet_pt',
                              'Jet_eta',
-                             'Jet_phi']
+                             'Jet_phi',
+                             'L1Egamma_pt',
+                             'L1Egamma_eta',
+                             'L1Egamma_phi',
+                             'L1Egamma_hwIso',
+                             'Electron_pt',
+                             'Electron_eta',
+                             'Electron_phi',
+                             'Electron_passSingleElectron',
+                             'Electron_passETau',
+                             'L1Muon_pt',
+                             'L1Muon_eta',
+                             'L1Muon_phi',
+                             'Muon_pt',
+                             'Muon_phi',
+                             'Muon_eta',
+                             'Muon_passSingleMuon',
+                             'Muon_passMuTau']
         
         if len(events)!= 0:
             print('Saving info in tmp file')

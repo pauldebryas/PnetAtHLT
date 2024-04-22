@@ -16,7 +16,8 @@ else:
 
 
 # only one file otherwise it's too long
-FileNameList_eff = f"/afs/cern.ch/work/s/skeshri/TauHLT/Braden/TauHLTOptimzation/PnetAtHLT/EfficiencyDen/{HLT_name}/ZprimeToTauTau_M-4000.root" 
+#FileNameList_eff = f"/afs/cern.ch/work/s/skeshri/TauHLT/Braden/TauHLTOptimzation/PnetAtHLT/EfficiencyDen/{HLT_name}/ZprimeToTauTau_M-4000.root" 
+FileNameList_eff = f"/afs/cern.ch/work/s/skeshri/TauHLT/Braden/Forked/TauTriggerDev/EfficiencyDen/{HLT_name}/GluGlutoHHto2B2Tau_kl-1p00_kt-1p00_c2-3p00.root" 
 #FileNameList_eff = files_from_path(f"/afs/cern.ch/work/p/pdebryas/PNetAtHLT/data/EfficiencyDen/{HLT_name}/")
 
 if HLT_name == 'HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1':
