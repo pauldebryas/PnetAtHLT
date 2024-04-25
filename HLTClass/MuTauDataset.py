@@ -2,6 +2,16 @@ import awkward as ak
 import numpy as np
 from HLTClass.dataset import Dataset
 from HLTClass.dataset import get_L1Taus, get_Taus, get_Jets, get_GenTaus, hGenTau_selection, matching_Gentaus, matching_L1Taus_obj, compute_PNet_charge_prob, get_L1Muons, get_Muons, get_GenMuons, GenMuon_selection, matching_GenMuons, matching_L1Muons_obj
+from helpers import delta_r
+
+
+def matching_dR_Min0p5(Obj1, Obj2, dR_matching_min = 0.5):
+    obj1_inpair, obj2_inpair = ak.unzip(ak.cartesian([Obj2, Obj1], nested=True))
+    dR_obj2_obj1 = delta_r(obj2_inpair, obj1_inpair)
+    mask_obj2_obj1 = (dR_obj2_obj1 > dR_matching_min)
+
+    mask = ak.any(mask_obj2_obj1, axis=-1)
+    return mask
 
 
 # ------------------------------ functions for MuTau with PNet ---------------------------------------------------------------
@@ -28,7 +38,7 @@ def compute_PNet_WP_MuTau(tau_pt, par):
 def Jet_selection_Tau(events, par, apply_PNET_WP = True):
     # return mask for Jet passing selection for MuTau path
     Jet_pt_corr = events['Jet_pt'].compute()*events['Jet_PNet_ptcorr'].compute()
-    Jets_mask = (events['Jet_pt'].compute() >= 30) & (np.abs(events['Jet_eta'].compute()) <= 2.3) & (Jet_pt_corr >= 30)
+    Jets_mask = (events['Jet_pt'].compute() >= 27) & (np.abs(events['Jet_eta'].compute()) <= 2.3) & (Jet_pt_corr >= 27)
     if apply_PNET_WP:
         probTauP = events['Jet_PNet_probtauhp'].compute()
         probTauM = events['Jet_PNet_probtauhm'].compute()
@@ -63,6 +73,8 @@ def evt_sel_MuTau(events, par, is_gen = False):
     Muons = get_Muons(events)
     Selected_Muons = Muons[Muon_mask]
 
+    #overlap_mask1 = matching_dR_Min0p5(L1Muons_Muon, L1Taus_Tau)
+    #overlap_mask2 = matching_dR_Min0p5(Selected_Muons, Jets_Tau)
 
     if is_gen:
         # if MC data, at least 1 GenTau should also pass
@@ -81,6 +93,8 @@ def evt_sel_MuTau(events, par, is_gen = False):
         GenMuons = get_GenMuons(events)
         GenMuons_Muon  = GenMuons[GenMuon_mask]
         matchingGenMuons_mask = matching_GenMuons(L1Muons_Muon, Selected_Muons, GenMuons_Muon)
+        #overlap_mask3 = matching_dR_Min0p5(GenMuons_Muon,GenTaus_Tau)
+        #overlap_mask = overlap_mask1 & overlap_mask2 & overlap_mask3
         # at least 1 GenTau should match L1Tau/Taus
         evt_Muonmask_matching = (ak.sum(matchingGenMuons_mask, axis=-1) >= 1)
     else:
@@ -90,8 +104,10 @@ def evt_sel_MuTau(events, par, is_gen = False):
         
         matchingMuons_mask = matching_L1Muons_obj(L1Muons_Muon, Selected_Muons)
         evt_Muonmask_matching = (ak.sum(matchingMuons_mask, axis=-1) >= 1)
+        #overlap_mask = overlap_mask1 & overlap_mask2 
 
-    MuTau_evt_mask = MuTau_evt_mask & evt_Taumask_matching & evt_Muonmask_matching
+    #MuTau_evt_mask = MuTau_evt_mask & evt_Taumask_matching & evt_Muonmask_matching & overlap_mask
+    MuTau_evt_mask = MuTau_evt_mask & evt_Taumask_matching & evt_Muonmask_matching 
     if is_gen: 
         return MuTau_evt_mask, matchingGentaus_mask, matchingGenMuons_mask
     else:
@@ -147,6 +163,9 @@ def evt_sel_HLT_IsoMu20_eta2p1_PNetTauhPFJetPt30_Loose_eta2p3_CrossL1(events, is
     Muons = get_Muons(events)
     Selected_Muons = Muons[Muon_mask]
 
+    #overlap_mask1 = matching_dR_Min0p5(L1Muons_Muon, L1Taus_Tau)
+    #overlap_mask2 = matching_dR_Min0p5(Selected_Muons, Taus_Tau)
+    
 
     if is_gen:
         # if MC data, at least 1 GenTau should also pass
@@ -165,6 +184,8 @@ def evt_sel_HLT_IsoMu20_eta2p1_PNetTauhPFJetPt30_Loose_eta2p3_CrossL1(events, is
         GenMuons = get_GenMuons(events)
         GenMuons_Muon  = GenMuons[GenMuon_mask]
         matchingGenMuons_mask = matching_GenMuons(L1Muons_Muon, Selected_Muons, GenMuons_Muon)
+        #overlap_mask3 = matching_dR_Min0p5(GenMuons_Muon,GenTaus_Tau)
+        #overlap_mask = overlap_mask1 & overlap_mask2 & overlap_mask3
         # at least 1 GenTau should match L1Tau/Taus
         evt_Muonmask_matching = (ak.sum(matchingGenMuons_mask, axis=-1) >= 1)
     else:
@@ -174,8 +195,10 @@ def evt_sel_HLT_IsoMu20_eta2p1_PNetTauhPFJetPt30_Loose_eta2p3_CrossL1(events, is
         
         matchingMuons_mask = matching_L1Muons_obj(L1Muons_Muon, Selected_Muons)
         evt_Muonmask_matching = (ak.sum(matchingMuons_mask, axis=-1) >= 1)
+        #overlap_mask = overlap_mask1 & overlap_mask2 
 
-    MuTau_evt_mask = MuTau_evt_mask & evt_Taumask_matching & evt_Muonmask_matching
+    #MuTau_evt_mask = MuTau_evt_mask & evt_Taumask_matching & evt_Muonmask_matching & overlap_mask
+    MuTau_evt_mask = MuTau_evt_mask & evt_Taumask_matching & evt_Muonmask_matching 
     if is_gen: 
         return MuTau_evt_mask, matchingGentaus_mask, matchingGenMuons_mask
     else:

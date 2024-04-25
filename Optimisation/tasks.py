@@ -310,7 +310,7 @@ class SaveOptimisationResultsMuTau(Task, HTCondorWorkflow, law.LocalWorkflow):
 
     config = load_cfg_file()
     output_path = config['DATA']['result_opt_Etau']
-    add_deeptau = False
+    add_deeptau = True
     par_double = [0.57, 0.44, 0]
 
     den_double = False
@@ -319,6 +319,7 @@ class SaveOptimisationResultsMuTau(Task, HTCondorWorkflow, law.LocalWorkflow):
         branches = {}
         os.makedirs(self.output_path, exist_ok=True)
 
+        
         param_ranges = [
             (0.45, 0.60),
             (0.35, 0.50)
@@ -376,7 +377,7 @@ class SaveOptimisationResultsMuTau(Task, HTCondorWorkflow, law.LocalWorkflow):
             N_den, N_num = dataset_eff.ComputeEffAlgo_MuTauPNet(params)
             eff = (N_num/N_den)
         else:
-            raise ValueError("Not implemented")
+            #raise ValueError("Not implemented")
             N_den, N_num = dataset_rate.get_Nnum_Nden_MuTauDeepNet()
             rate = (N_num/N_den)*L1A_physics
 

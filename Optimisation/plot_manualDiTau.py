@@ -99,7 +99,7 @@ if __name__ == '__main__':
     # plot("rate", "efficiency", df["params"], "Rate (Hz)", "Efficiency", 17.80, 18.20, 0.84, 0.86, "plot.pdf", data=df)
     # plot("rate", "eff", df["params"], "Rate (Hz)", "Efficiency", 60, 61, 0.675, 0.68, "plot_tri_pt_optimised_cut.pdf", data=df)
     # plot("rate", "eff", df["params"], "Rate (Hz)", "Efficiency", 60, 61, 0.679, 0.68, "plot_optimised_cut.pdf", data=df)
-    plot("rate", "eff", df["params"], "Rate (Hz)", "Efficiency", 0, 100, 0., 1., "plot_optimised_ditau_new.pdf", data=df, params_to_mark=[["deeptau"], [0.56, 0.47], [0.6, 0.5]])
+    plot("rate", "eff", df["params"], "Rate (Hz)", "Efficiency", 0, 100, 0., 1., "plot_optimised_ditau_new.pdf", data=df, params_to_mark=[["deeptau"],[0.48,0.4],[0.52,0.42],[0.56,0.47]])
     plot("rate", "eff", df["params"], "Rate (Hz)", "Efficiency", 48, 50, 0.7975, 0.81, "plot_optimised_ditau_medium_new.pdf", data=df, params_to_mark=[[0.56, 0.47]], plot_text=True)
     plot("rate", "eff", df["params"], "Rate (Hz)", "Efficiency", 39, 40, 0.77, 0.79, "plot_optimised_ditau_tight_new.pdf", data=df, params_to_mark=[[0.60, 0.50]], plot_text=True)
     # plot("rate", "eff", df["params"], "Rate (Hz)", "Efficiency", 0., 1., 0., 1., "plot_tri_pt_optimised_cut.pdf", data=df)
