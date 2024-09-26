@@ -12,7 +12,7 @@ action() {
     export RUN_PATH="$this_dir"
 
     #setup private conda installation for env activation
-    PRIVATE_CONDA_INSTALL=/afs/cern.ch/work/p/pdebryas/miniconda3
+    PRIVATE_CONDA_INSTALL=/eos/user/s/skeshri/miniconda3
     __conda_setup="$($PRIVATE_CONDA_INSTALL/bin/conda shell.${SHELL##*/} hook)"
     if [ $? -eq 0 ]; then
         eval "$__conda_setup"
@@ -26,6 +26,7 @@ action() {
     unset __conda_setup
     
     conda activate PnetEnv
+    #conda activate /afs/cern.ch/work/s/skeshri/.conda/pkgs
 
     source "$( law completion )" ""
 }

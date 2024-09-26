@@ -95,6 +95,7 @@ def evt_sel_LooseDeepTauPFTauHPS180_L2NN_eta2p1_v3(events, is_gen = False):
     SingleTau_mask = Tau_selection_SingleTau(events)
     # at least 1 L1tau/ recoTau should pass
     SingleTau_evt_mask = (ak.sum(L1Tau_Tau120er2p1L2NN_mask, axis=-1) >= 1) & (ak.sum(SingleTau_mask, axis=-1) >= 1)
+    print("SingleTau_evt_mask",SingleTau_evt_mask)
     if is_gen:
         # if MC data, at least 1 GenTau should also pass
         GenTau_mask = hGenTau_selection(events)

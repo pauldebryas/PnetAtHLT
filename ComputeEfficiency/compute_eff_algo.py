@@ -16,7 +16,8 @@ else:
 
 
 # only one file otherwise it's too long
-FileNameList_eff = f"/afs/cern.ch/work/p/pdebryas/PNetAtHLT/data/EfficiencyDen/{HLT_name}/ZprimeToTauTau_M-4000.root" 
+#FileNameList_eff = f"/afs/cern.ch/work/s/skeshri/TauHLT/Braden/TauHLTOptimzation/PnetAtHLT/EfficiencyDen/{HLT_name}/ZprimeToTauTau_M-4000.root" 
+FileNameList_eff = f"/afs/cern.ch/work/s/skeshri/TauHLT/Braden/Forked/TauTriggerDev/EfficiencyDen/{HLT_name}/GluGlutoHHto2B2Tau_kl-1p00_kt-1p00_c2-3p00.root" 
 #FileNameList_eff = files_from_path(f"/afs/cern.ch/work/p/pdebryas/PNetAtHLT/data/EfficiencyDen/{HLT_name}/")
 
 if HLT_name == 'HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1':
@@ -40,6 +41,28 @@ if HLT_name == 'HLT_LooseDeepTauPFTauHPS180_L2NN_eta2p1_v3':
     else:
         print(f'Quick EffAlgo computation for {HLT_name}:')
         N_den, N_num = dataset_eff.ComputeEffAlgo_HLTLooseDeepTauPFTauHPS180_L2NN_eta2p1_v3()    
+
+if HLT_name == 'HLT_Ele24_eta2p1_WPTight_Gsf_PNetTauhPFJetPt30_Loose_eta2p3_CrossL1':
+    from HLTClass.ETauDataset import ETauDataset
+    dataset_eff = ETauDataset(FileNameList_eff)
+
+    if PNetMode:
+        print(f'Quick EffAlgo computation for SingleTau path with PNet param {PNetparam}:')
+        N_den, N_num = dataset_eff.ComputeEffAlgo_ETauPNet(PNetparam)
+    else:
+        print(f'Quick EffAlgo computation for {HLT_name}:')
+        N_den, N_num = dataset_eff.ComputeEffAlgo_ETauDeepNet()    
+
+if HLT_name == 'HLT_IsoMu20_eta2p1_LooseDeepTauPFTauHPS27_eta2p1_CrossL1':
+    from HLTClass.MuTauDataset import MuTauDataset
+    dataset_eff = MuTauDataset(FileNameList_eff)
+
+    if PNetMode:
+        print(f'Quick EffAlgo computation for SingleTau path with PNet param {PNetparam}:')
+        N_den, N_num = dataset_eff.ComputeEffAlgo_MuTauPNet(PNetparam)
+    else:
+        print(f'Quick EffAlgo computation for {HLT_name}:')
+        N_den, N_num = dataset_eff.ComputeEffAlgo_MuTauDeepNet()    
 
 EffAlgo, EffAlgo_low, EffAlgo_up = compute_ratio_witherr(N_num, N_den)
 print(f"Eff : {EffAlgo}")

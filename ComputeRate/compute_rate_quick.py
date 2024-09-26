@@ -53,6 +53,17 @@ if HLT_name == 'HLT_DoubleTauOrSingleTau':
     else:
         N_den, N_num = dataset_rate.get_Nnum_Nden_HLT_DoubleORSingleDeepTau()
 
+if HLT_name == 'HLT_Ele24_eta2p1_WPTight_Gsf_PNetTauhPFJetPt30_Loose_eta2p3_CrossL1':
+    from HLTClass.ETauDataset import ETauDataset
+
+    dataset_rate = ETauDataset(FileNameList_rate)
+
+    if PNetMode:
+        N_den, N_num = dataset_rate.get_Nnum_Nden_ETauPNet(PNetparam)
+    else:
+        N_den, N_num = dataset_rate.get_Nnum_Nden_ETauDeepNet()
+
+
 rate, rate_low, rate_up = compute_ratio_witherr(N_num, N_den)
 
 print(f"Rate : {rate*L1A_physics}")
